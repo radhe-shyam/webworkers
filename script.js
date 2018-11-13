@@ -6,7 +6,7 @@ window.addEventListener('load', function () {
                 alert('Series length must be a positive number.');
             } else {
                 var seriesBoard = document.getElementById('seriesBoard');
-                seriesBoard.innerHTML = seriesLength;
+                seriesBoard.innerHTML = '<h4>Generated Fib Series:</h4>';
                 if (typeof Worker == undefined) {
                     seriesBoard.innerHTML = 'Your browser doesn\'t support workers';
                 } else {
@@ -14,6 +14,16 @@ window.addEventListener('load', function () {
                     w.postMessage({
                         seriesLength: seriesLength
                     });
+                    w.onmessage = function (event) {
+                        if (event.data && event.data.destroy) {
+                            w.terminate();
+                        } else {
+                            seriesBoard.innerHTML += event.data.result + '<br/>';
+                        }
+                    }
+                    w.onerror = function () {
+
+                    }
                 }
             }
             e.preventDefault();
